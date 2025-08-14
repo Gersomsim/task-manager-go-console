@@ -10,7 +10,7 @@ import (
 const filename = "tasks.json"
 
 func main() {
-	var option int
+	var option string
 	var tasks []task.Task
 	tasks, err := task.LoadFromFile(filename)
 	if err != nil {
@@ -18,7 +18,7 @@ func main() {
 		time.Sleep(1 * time.Second)
 		return
 	}
-	for option != 4 {
+	for option != menu.Exit {
 		fmt.Print("\033[H\033[2J")
 		fmt.Println("Bienvenido al gestor de tareas")
 		optionSelected, error := menu.ShowMenu()

@@ -88,7 +88,7 @@ func completeTask(tasks *[]Task) {
 	
 }
 
-func Handler(option int, tasks *[]Task) {
+func Handler(option string, tasks *[]Task) {
 
 	switch option {
 	case menu.AddTask:
