@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+type InputFunc func(string) string
+
 func Input(message string) string {
 	fmt.Print(message)
 	reader := bufio.NewReader(os.Stdin)
