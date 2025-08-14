@@ -1,25 +1,17 @@
 package task
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
 	"os"
 	"strings"
+	"task-manager/internal/cli"
 	"task-manager/menu"
 	"text/tabwriter"
 	"time"
 )
 
-func readInput(message string) string {
-	fmt.Print(message)
-	reader := bufio.NewReader(os.Stdin)
-	input, err := reader.ReadString('\n')
-	if err != nil {
-		return ""
-	}
-	return strings.TrimSpace(input)
-}
+
 
 func addTask(nextId int) (Task, error) {
 	var task Task
@@ -27,11 +19,11 @@ func addTask(nextId int) (Task, error) {
 	fmt.Print("\033[H\033[2J")
 	fmt.Printf("Agregar tarea %d o precione enter para salir \n", nextId)
 	fmt.Println("--------------------------------")
-	task.Title = readInput("Ingrese el titulo de la tarea: ")
+	task.Title = cli.Input("Ingrese el titulo de la tarea: ")
 	if task.Title == "" {
 		return task, errors.New("título no válido")
 	}
-	task.Description = readInput("Ingrese la descripcion de la tarea: ")
+	task.Description = cli.Input("Ingrese la descripcion de la tarea: ")
 
 	task.CreatedAt = time.Now()
 	task.UpdatedAt = time.Now()
