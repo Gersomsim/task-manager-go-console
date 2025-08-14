@@ -11,7 +11,7 @@ import (
 )
 
 
-func addTask(nextId int) (Task, error) {
+func AddTask(nextId int) (Task, error) {
 	var task Task
 	task.Id = nextId
 	fmt.Print("\033[H\033[2J")
@@ -28,7 +28,7 @@ func addTask(nextId int) (Task, error) {
 	return task, nil
 }
 
-func listTasks(tasks []Task) {
+func ListTasks(tasks []Task) {
 	fmt.Print("\033[H\033[2J")
 	fmt.Println("---------------")
 	fmt.Println("📝 LISTA DE TAREAS")
@@ -57,7 +57,7 @@ func listTasks(tasks []Task) {
 	w.Flush()
 }
 
-func completeTask(tasks *[]Task) {
+func CompleteTask(tasks *[]Task) {
 	fmt.Print("\033[H\033[2J")
 	fmt.Println("Completar tarea")
 	fmt.Println("--------------------------------")
