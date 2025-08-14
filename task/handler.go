@@ -77,8 +77,7 @@ func completeTask(tasks *[]Task) {
 			var confirm string
 			fmt.Scanf("%s", &confirm)
 			if strings.ToLower(confirm) == "s" {
-				(*tasks)[idx].Completed = true
-				(*tasks)[idx].UpdatedAt = time.Now()
+				(*tasks)[idx].MarkAsCompleted()
 				fmt.Println("✅ Tarea completada correctamente")
 				time.Sleep(1 * time.Second)
 				return
