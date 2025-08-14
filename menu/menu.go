@@ -3,17 +3,19 @@ package menu
 import (
 	"errors"
 	"fmt"
+	"task-manager/internal/cli"
 )
 
 const (
-	AddTask = 1
-	ListTasks = 2
-	CompleteTask = 3
-	Exit = 4
+	AddTask = "1"
+	ListTasks = "2"
+	CompleteTask = "3"
+	Exit = "4"
 )
 
-func ShowMenu() (int, error) {
-	var option int
+func ShowMenu() (string, error) {
+	var option string
+	validOptions := []string{AddTask, ListTasks, CompleteTask, Exit}
 	fmt.Println("--------------------------------")
 	fmt.Println(" ")
 	fmt.Println("Seleccione una opción:")
@@ -23,17 +25,14 @@ func ShowMenu() (int, error) {
 	fmt.Println("4. 🚪 Salir")
 	fmt.Println(" ")
 	fmt.Println("--------------------------------")
-	fmt.Printf("Ingrese : ")
-	// Verificamos que el tipo de dato sea int
-	_, err := fmt.Scanln(&option)
 
-	if err != nil {
-		return 0, errors.New("La opcion ingresada no es valida, debe ser un numero del 1 al 4")
+	option = cli.Input("Ingrese la opcion: ")
+
+	for _, opt := range validOptions {
+		if option == opt {
+			return option, nil
+		}
 	}
 
-	if option < AddTask || option > Exit {
-		return 0, errors.New("La opcion ingresada no es valida")
-	}
-
-	return option, nil
+	return "", errors.New("la opcion ingresada no es valida, debe ser un numero del 1 al 4")
 }
