@@ -1,6 +1,7 @@
 package task
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"os"
@@ -10,20 +11,27 @@ import (
 	"time"
 )
 
+func readInput(message string) string {
+	fmt.Print(message)
+	reader := bufio.NewReader(os.Stdin)
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		return ""
+	}
+	return strings.TrimSpace(input)
+}
+
 func addTask(nextId int) (Task, error) {
 	var task Task
 	task.Id = nextId
 	fmt.Print("\033[H\033[2J")
 	fmt.Printf("Agregar tarea %d o precione enter para salir \n", nextId)
 	fmt.Println("--------------------------------")
-	fmt.Printf("Ingrese el titulo de la tarea: ")
-	fmt.Scanf("%s", &task.Title)
+	task.Title = readInput("Ingrese el titulo de la tarea: ")
 	if task.Title == "" {
 		return task, errors.New("título no válido")
 	}
-	time.Sleep(500 * time.Millisecond)
-	fmt.Printf("Ingrese la descripcion de la tarea: ")
-	fmt.Scanf("%s", &task.Description)
+	task.Description = readInput("Ingrese la descripcion de la tarea: ")
 
 	task.CreatedAt = time.Now()
 	task.UpdatedAt = time.Now()
