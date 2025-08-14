@@ -12,8 +12,6 @@ type Dependencies struct {
 	CompleteTask func(*[]Task)
 }
 
-
-
 func Handler(option string, tasks *[]Task, deps Dependencies) {
 
 	switch option {
