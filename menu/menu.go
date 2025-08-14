@@ -13,7 +13,7 @@ const (
 	Exit = "4"
 )
 
-func ShowMenu() (string, error) {
+func ShowMenu(input cli.InputFunc) (string, error) {
 	var option string
 	validOptions := []string{AddTask, ListTasks, CompleteTask, Exit}
 	fmt.Println("--------------------------------")
@@ -26,7 +26,7 @@ func ShowMenu() (string, error) {
 	fmt.Println(" ")
 	fmt.Println("--------------------------------")
 
-	option = cli.Input("Ingrese la opcion: ")
+	option = input("Ingrese la opcion: ")
 
 	for _, opt := range validOptions {
 		if option == opt {

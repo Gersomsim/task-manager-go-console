@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"task-manager/internal/cli"
 	"task-manager/menu"
 	"task-manager/task"
 	"time"
@@ -21,7 +22,7 @@ func main() {
 	for option != menu.Exit {
 		fmt.Print("\033[H\033[2J")
 		fmt.Println("Bienvenido al gestor de tareas")
-		optionSelected, error := menu.ShowMenu()
+		optionSelected, error := menu.ShowMenu(cli.Input)
 		if error != nil {
 			fmt.Printf("Error: %v\n", error)
 			time.Sleep(1 * time.Second)
