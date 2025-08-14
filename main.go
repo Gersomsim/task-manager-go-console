@@ -29,7 +29,11 @@ func main() {
 			continue
 		}
 		option = optionSelected
-		task.Handler(option, &tasks)
+		task.Handler(option, &tasks, task.Dependencies{
+			AddTask: task.AddTask,
+			ListTasks: task.ListTasks,
+			CompleteTask: task.CompleteTask,
+		})
 	}
 	err = task.SaveToFile(tasks, filename)
 	if err != nil {
