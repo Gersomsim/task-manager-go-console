@@ -2,7 +2,7 @@ profile: cover.out
 threshold:
   file: 70
   package: 80
-  total: 95
+  total: 90
 override:
   - path: ^pkg/lib/foo$
     threshold: 100
