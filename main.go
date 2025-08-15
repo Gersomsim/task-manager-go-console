@@ -15,7 +15,9 @@ const filename = "tasks.json"
 func main() {
 	var option string
 	var tasks []task.Task
-	tasks, err := task.LoadFromFile(filename)
+	tasks, err := task.LoadFromFile(filename, func(name string) (io.ReadCloser, error) {
+		return os.Open(name)
+	})
 	if err != nil {
 		fmt.Printf("Error al cargar las tareas: %v\n", err)
 		time.Sleep(1 * time.Second)
@@ -48,14 +50,4 @@ func main() {
 	}
 
 	fmt.Println("Gracias por usar el gestor de tareas")
-
-
-
-
-
-
-	
-
-
-
 }

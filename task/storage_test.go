@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -22,6 +23,15 @@ func mockFileCreator(t *testing.T, buf *bytes.Buffer) func(name string) (io.Writ
 	return func(name string) (io.WriteCloser, error) {
 		t.Logf("Se intentó crear el archivo: %s", name)
 		return &mockFile{Buffer: buf}, nil
+	}
+}
+
+func mockFileOpener(content string, err error) func(name string) (io.ReadCloser, error) {
+	return func(name string) (io.ReadCloser, error) {
+			if err != nil {
+					return nil, err
+			}
+			return &mockFile{Buffer: bytes.NewBufferString(content)}, nil
 	}
 }
 
@@ -84,4 +94,64 @@ func TestSaveToFile(t *testing.T) {
 			t.Errorf("Mensaje de error inesperado. Se esperaba un error de permisos, se obtuvo: %v", err)
 		}
 	})
+}
+
+func TestLoadFromFile(t *testing.T) {
+	tests := []struct {
+	name              string
+	fileContent       string
+	openFileErr       error
+	expectedTasksCount int
+	expectedError     error
+}{
+	{
+			name:              "Debería cargar las tareas correctamente",
+			fileContent:       `[{"Id": 1, "Title": "Tarea 1"}]`,
+			openFileErr:       nil,
+			expectedTasksCount: 1,
+			expectedError:     nil,
+	},
+	{
+			name:              "Debería retornar un slice vacío si el archivo no existe",
+			fileContent:       "",
+			openFileErr:       os.ErrNotExist,
+			expectedTasksCount: 0,
+			expectedError:     nil,
+	},
+	{
+			name:              "Debería retornar un error si el JSON es inválido",
+			fileContent:       `{"Id": 1`, // JSON inválido
+			openFileErr:       nil,
+			expectedTasksCount: 0,
+			expectedError:     errors.New("error al decodificar el archivo"),
+	},
+	{
+			name:              "Debería retornar un error genérico",
+			fileContent:       "",
+			openFileErr:       errors.New("error de permisos"),
+			expectedTasksCount: 0,
+			expectedError:     errors.New("error al abrir el archivo"),
+	},
+}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			// Creacion de mock de apertura de archivo
+			mockOpener := mockFileOpener(test.fileContent, test.openFileErr)
+
+			// Llamada a la funcion a testear
+			tasks, err := LoadFromFile("tasks.json", mockOpener)
+
+			// Verificacion del error esperado 
+			if err != nil && err.Error() != test.expectedError.Error() {
+				t.Errorf("Expected error: %v, got: %v", test.expectedError, err)
+			}
+
+			// Verificacion del numero de tareas esperado
+			if len(tasks) != test.expectedTasksCount {
+				t.Errorf("Expected %d tasks, got %d", test.expectedTasksCount, len(tasks))
+			}
+			
+		})
+	}
 }

@@ -2,6 +2,7 @@ package task
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -46,23 +47,25 @@ func SaveToFile(tasks []Task, filename string, fileCreator FileCreator) error {
 	return nil
 }
 
-func LoadFromFile(filename string) ([]Task, error) {
+type FileOpener func(name string) (io.ReadCloser, error)
+
+func LoadFromFile(filename string, fileOpener FileOpener) ([]Task, error) {
 	fmt.Print("\033[H\033[2J")
 	fmt.Println("Cargando tareas desde el archivo")
 	var tasks []Task
-	file, err := os.Open(dir + "/" + filename)
+	file, err := fileOpener(dir + "/" + filename)
 
 	if err != nil {
 		if os.IsNotExist(err) {
 			return []Task{}, nil
 		}
-		return []Task{}, err
+		return []Task{}, errors.New("error al abrir el archivo")
 	}
 	defer file.Close()
 	decoder := json.NewDecoder(file)
 	err = decoder.Decode(&tasks)
 	if err != nil {
-		return tasks, err
+		return tasks, errors.New("error al decodificar el archivo")
 	}
 	return tasks, nil
 }
