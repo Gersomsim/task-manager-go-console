@@ -21,17 +21,9 @@ jobs:
       run: go mod download
 
     - name: Run Tests and generate coverage report
-      run: go test ./... -covermode=count -coverprofile=coverage.out
+      run: go test ./... -coverprofile=./cover.out -covermode=atomic -coverpkg=./...
 
-    - name: Generate Go Coverage Badge
-      uses: zgosalvez/go-test-coverage@v2
+    - name: check test coverage
+      uses: vladopajic/go-test-coverage@v2
       with:
-        badge: true
-
-    - name: Push the Badge to the Repository
-      run: |
-        git config user.name 'github-actions'
-        git config user.email 'github-actions@github.com'
-        git add coverage.svg
-        git commit -m "chore: Update test coverage badge" || echo "No changes to commit"
-        git push
+        config: ./.testcoverage.yml
