@@ -17,13 +17,17 @@ jobs:
       with:
         go-version: 1.25.0
 
-    - name: Run Tests and gernerate coverage report
+    - name: Install dependencies
+      run: go mod download
+
+    - name: Run Tests and generate coverage report
       run: go test ./... -covermode=count -coverprofile=coverage.out
 
-    - name: Go Coverage Badge
+    - name: Generate Go Coverage Badge
       uses: tj-actions/go-coverage-badge@v2
       with:
         filename: coverage.out
+
     - name: Push new badge to repository
       run: |
         git config user.name 'github-actions'
