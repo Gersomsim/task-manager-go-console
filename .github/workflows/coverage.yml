@@ -21,9 +21,11 @@ jobs:
       run: go mod download
 
     - name: Run Tests and generate coverage report
-      run: go test ./internal/cli ./menu ./task -coverprofile=./cover.out -covermode=atomic -coverpkg=./internal/cli,./menu,./task
+      run: go test ./... -coverprofile=./cover.out -covermode=atomic -coverpkg=./...
 
     - name: check test coverage
       uses: vladopajic/go-test-coverage@v2
       with:
         config: ./.testcoverage.yml
+        git-token: ${{ github.ref_name == 'main' && secrets.GITHUB_TOKEN || '' }}
+        git-branch: badges
