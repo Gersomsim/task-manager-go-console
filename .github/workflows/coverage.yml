@@ -24,9 +24,12 @@ jobs:
       run: go test ./... -covermode=count -coverprofile=coverage.out
 
     - name: Generate Go Coverage Badge
-      uses: tj-actions/go-coverage-badge@v2
+      uses: irongut/CodeCoverageSummary@v1.3.0
       with:
         filename: coverage.out
+        format: markdown
+        output: both
+        thresholds: '50 80'
 
     - name: Push new badge to repository
       run: |
