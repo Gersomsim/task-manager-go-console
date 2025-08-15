@@ -3,9 +3,12 @@ package task
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"time"
 )
+
+type FileCreator func(name string) (io.WriteCloser, error)
 
 const dir = "storage"
 
@@ -21,13 +24,15 @@ func makeDir() {
 	}
 }
 
-func SaveToFile(tasks []Task, filename string ) error {
+
+
+func SaveToFile(tasks []Task, filename string, fileCreator FileCreator) error {
 	fmt.Print("\033[H\033[2J")
 	makeDir()
 	fmt.Println("💾 Guardando tareas en el archivo...")
 
 	// creamos el archivo o lo sobreescribimos
-	file, err := os.Create(dir + "/" + filename)
+	file, err := fileCreator(dir + "/" + filename)
 	if err != nil {
 		return err
 	}

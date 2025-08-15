@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"task-manager/internal/cli"
 	"task-manager/menu"
 	"task-manager/task"
@@ -35,7 +37,9 @@ func main() {
 			CompleteTask: task.CompleteTask,
 		})
 	}
-	err = task.SaveToFile(tasks, filename)
+	err = task.SaveToFile(tasks, filename, func(name string) (io.WriteCloser, error) {
+		return os.Create(name)
+	})
 	if err != nil {
 		fmt.Println("El trabajo se perderá")
 		fmt.Printf("Error al guardar las tareas: %v\n", err)
