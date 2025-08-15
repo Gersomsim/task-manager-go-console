@@ -27,14 +27,4 @@ jobs:
       uses: irongut/CodeCoverageSummary@v1.3.0
       with:
         filename: coverage.out
-        format: markdown
-        output: both
-        thresholds: '50 80'
-
-    - name: Push new badge to repository
-      run: |
-        git config user.name 'github-actions'
-        git config user.email 'github-actions@github.com'
-        git add coverage.svg
-        git commit -m 'Update coverage badge' || echo "No changes to commit"
-        git push
+        badge: true
