@@ -62,6 +62,16 @@ func TestCompleteTask(t *testing.T) {
 				"n",
 			},
 		},
+		{
+			name: "Should not complete a task if the input is empty",
+			initialTasks: mockTasks(),
+			completeIndex: 0,
+			completedTask: false,
+			inputs: []string{
+				"",
+				"s",
+			},
+		},
 	}
 	for _, test := range testCases {
 		t.Run(test.name, func(t *testing.T) {

@@ -53,7 +53,7 @@ func mockTasks() []Task {
 			Id: 2,
 			Title: "Test Task 2",
 			Description: "Test Description 2",
-			Completed: false,
+			Completed: true,
 			CreatedAt: time.Now(),
 		},
 	}

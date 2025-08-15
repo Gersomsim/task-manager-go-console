@@ -9,12 +9,13 @@ import (
 	"time"
 )
 
-type FileCreator func(name string) (io.WriteCloser, error)
 
 const dir = "storage"
 
-func makeDir() {
-	err := os.Mkdir(dir, 0755)
+type mkdirFunc func(name string, perm os.FileMode) error
+
+func makeDir(mkdir mkdirFunc) {
+	err := mkdir(dir, 0755)
 	if os.IsExist(err) {
 		return
 	}
@@ -25,11 +26,11 @@ func makeDir() {
 	}
 }
 
-
+type FileCreator func(name string) (io.WriteCloser, error)
 
 func SaveToFile(tasks []Task, filename string, fileCreator FileCreator) error {
 	fmt.Print("\033[H\033[2J")
-	makeDir()
+	makeDir(os.Mkdir)
 	fmt.Println("💾 Guardando tareas en el archivo...")
 
 	// creamos el archivo o lo sobreescribimos

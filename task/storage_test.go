@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -154,4 +155,61 @@ func TestLoadFromFile(t *testing.T) {
 			
 		})
 	}
+}
+
+func mockMkdirAlreadyExists(name string, perm os.FileMode) error {
+	return os.ErrExist // Retorna el error específico de "ya existe".
+}
+
+// mockMkdirWithError simula un error de creación diferente.
+func mockMkdirWithError(name string, perm os.FileMode) error {
+	return errors.New("simulated permission denied") // Retorna un error genérico.
+}
+
+func TestMakeDir(t *testing.T) {
+	// Capturamos la salida para verificar los mensajes impresos.
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+	defer func() {
+		os.Stdout = oldStdout
+	}()
+
+	t.Run("No debería retornar un error si el directorio ya existe", func(t *testing.T) {
+		// Llamamos a la función con el mock para el caso de "ya existe".
+		makeDir(mockMkdirAlreadyExists)
+
+		// Cerramos el pipe de escritura y leemos la salida.
+		w.Close()
+		output, _ := ioutil.ReadAll(r)
+		outputStr := strings.TrimSpace(string(output))
+
+		// Verificamos que no se imprimió nada, ya que el error se ignoró.
+		if outputStr != "" {
+			t.Errorf("Se imprimió una salida inesperada: %s", outputStr)
+		}
+	})
+
+	t.Run("Debería imprimir un error si la creación falla", func(t *testing.T) {
+		// Capturamos la salida de nuevo para este caso de prueba.
+		oldStdout := os.Stdout
+		r, w, _ := os.Pipe()
+		os.Stdout = w
+		defer func() {
+			os.Stdout = oldStdout
+		}()
+
+		// Llamamos a la función con el mock para el caso de error.
+		makeDir(mockMkdirWithError)
+
+		w.Close()
+		output, _ := ioutil.ReadAll(r)
+		outputStr := strings.TrimSpace(string(output))
+
+		// Verificamos que el mensaje de error se imprimió.
+		expectedOutput := "Error al crear el directorio: simulated permission denied"
+		if !strings.Contains(outputStr, expectedOutput) {
+			t.Errorf("Mensaje de error inesperado. Se esperaba que contuviera '%s', se obtuvo '%s'", expectedOutput, outputStr)
+		}
+	})
 }
