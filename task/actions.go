@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"task-manager/internal/cli"
 	"text/tabwriter"
@@ -11,17 +12,17 @@ import (
 )
 
 
-func AddTask(nextId int) (Task, error) {
+func AddTask(nextId int, input cli.InputFunc) (Task, error) {
 	var task Task
 	task.Id = nextId
 	fmt.Print("\033[H\033[2J")
 	fmt.Printf("Agregar tarea %d o precione enter para salir \n", nextId)
 	fmt.Println("--------------------------------")
-	task.Title = cli.Input("Ingrese el titulo de la tarea: ")
+	task.Title = input("Ingrese el titulo de la tarea: ")
 	if task.Title == "" {
 		return task, errors.New("título no válido")
 	}
-	task.Description = cli.Input("Ingrese la descripcion de la tarea: ")
+	task.Description = input("Ingrese la descripcion de la tarea: ")
 
 	task.CreatedAt = time.Now()
 	task.UpdatedAt = time.Now()
@@ -57,23 +58,25 @@ func ListTasks(tasks []Task) {
 	w.Flush()
 }
 
-func CompleteTask(tasks *[]Task) {
+func CompleteTask(tasks *[]Task, input cli.InputFunc) {
 	fmt.Print("\033[H\033[2J")
 	fmt.Println("Completar tarea")
 	fmt.Println("--------------------------------")
-	fmt.Printf("Ingrese el id de la tarea a completar: ")
-	var id int
-	_, err := fmt.Scanf("%d", &id)
-	if err != nil {
-			fmt.Println("Error: ID inválido")
-			time.Sleep(1 * time.Second)
-			return
+	id := input("Ingrese el id de la tarea a completar: ")
+	if id == "" {
+		return
 	}
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("Error: ID inválido")
+		time.Sleep(1 * time.Second)
+		return
+	}
+	
 	for idx, task := range *tasks {
-		if task.Id == id {
-			fmt.Printf("¿Está seguro de completar la tarea %s? s/n: ", task.Title)
-			var confirm string
-			fmt.Scanf("%s", &confirm)
+		if task.Id == idInt {
+			fmt.Printf("¿Está seguro de completar la tarea %s?\n", task.Title)
+			confirm := input("s/n: ")
 			if strings.ToLower(confirm) == "s" {
 				(*tasks)[idx].MarkAsCompleted()
 				fmt.Println("✅ Tarea completada correctamente")

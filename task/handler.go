@@ -2,21 +2,22 @@ package task
 
 import (
 	"fmt"
+	"task-manager/internal/cli"
 	"task-manager/menu"
 	"time"
 )
 
 type Dependencies struct {
-	AddTask func(nextId int) (Task, error)
+	AddTask func(nextId int, input cli.InputFunc) (Task, error)
 	ListTasks func([]Task)
-	CompleteTask func(*[]Task)
+	CompleteTask func(*[]Task, cli.InputFunc)
 }
 
 func Handler(option string, tasks *[]Task, deps Dependencies) {
 
 	switch option {
 	case menu.AddTask:
-		newTask, err := deps.AddTask(len(*tasks) + 1)
+		newTask, err := deps.AddTask(len(*tasks) + 1, cli.Input)
 		if err == nil {
 			*tasks = append(*tasks, newTask)
 			fmt.Println("✅ Tarea agregada correctamente")
@@ -28,7 +29,7 @@ func Handler(option string, tasks *[]Task, deps Dependencies) {
 		fmt.Println("Presione enter para continuar")
 		fmt.Scanln()
 	case menu.CompleteTask:
-		deps.CompleteTask(tasks)
+		deps.CompleteTask(tasks, cli.Input)
 	}
 }
 
