@@ -1,18 +1,18 @@
-# Configuración para go-test-coverage
-# Archivo de configuración para el workflow de GitHub Actions
+profile: cover.out
+threshold:
+  file: 70
+  package: 80
+  total: 95
+override:
+  - path: ^pkg/lib/foo$
+    threshold: 100
 
-# Umbral mínimo de cobertura (porcentaje)
-threshold: 50
+exclude:
+  paths:
+    - \.pb\.go$
+    - ^pkg/bar
+breakdown-file-name: ''
 
-# Archivo de salida del perfil de cobertura
-coverage-file: ./cover.out
-
-# Formato de salida
-output-format: markdown
-
-# Generar badge
-badge: true
-
-# Archivos a incluir en el análisis de cobertura
-packages:
-  - ./...
+diff:
+  base-breakdown-file-name: ''
+  threshold: null
