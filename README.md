@@ -1,6 +1,6 @@
 # 📋 Gestor de Tareas (Task Manager)
 
-![Go Coverage](https://github.com/Gersomsim/task-manager-go-console/blob/main/coverage.svg)
+![coverage](https://raw.githubusercontent.com/Gersomsim/task-manager-go-console/refs/heads/badges/.badges/main/coverage.svg)
 
 Un gestor de tareas simple y eficiente desarrollado en Go que te permite administrar tus tareas diarias desde la línea de comandos.
 
