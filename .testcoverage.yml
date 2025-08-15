@@ -1,0 +1,18 @@
+# Configuración para go-test-coverage
+# Archivo de configuración para el workflow de GitHub Actions
+
+# Umbral mínimo de cobertura (porcentaje)
+threshold: 50
+
+# Archivo de salida del perfil de cobertura
+coverage-file: ./cover.out
+
+# Formato de salida
+output-format: markdown
+
+# Generar badge
+badge: true
+
+# Archivos a incluir en el análisis de cobertura
+packages:
+  - ./...
